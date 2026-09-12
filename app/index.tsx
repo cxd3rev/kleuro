@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { BrandMark } from "../components/BrandMark";
 import { Button } from "../components/Button";
 import { HousePreview } from "../components/HousePreview";
+import { ParentBrand } from "../components/ParentBrand";
 import { Screen } from "../components/Screen";
 import { AppText } from "../components/AppText";
 
@@ -14,11 +15,6 @@ export default function WelcomeScreen() {
       <View className="min-h-full justify-between">
         <View>
           <BrandMark />
-          <View className="mt-4 self-start rounded-full bg-kleuro-cream px-3 py-1">
-            <AppText variant="medium" className="text-xs text-kleuro-dark">
-              Gratis • Geen account nodig
-            </AppText>
-          </View>
         </View>
 
         <HousePreview />
@@ -35,9 +31,12 @@ export default function WelcomeScreen() {
             hoe je woning eruit zou kunnen zien.
           </AppText>
           <Button
-            label="Probeer het gratis"
+            label="Aan de slag"
             onPress={() => router.push("/home")}
           />
+          <View className="mt-8">
+            <ParentBrand />
+          </View>
         </View>
       </View>
     </Screen>

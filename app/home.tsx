@@ -3,6 +3,7 @@ import { Pressable, View } from "react-native";
 import { AppText } from "../components/AppText";
 import { BrandMark } from "../components/BrandMark";
 import { Button } from "../components/Button";
+import { ParentBrand } from "../components/ParentBrand";
 import { Screen } from "../components/Screen";
 import { StepCard } from "../components/StepCard";
 
@@ -27,15 +28,9 @@ export default function HomeScreen() {
 
       <View className="mt-8">
         <Button
-          label="Probeer het gratis"
+          label="Aan de slag"
           onPress={() => router.push("/foto")}
         />
-        <AppText
-          variant="medium"
-          className="mt-3 text-center text-sm text-kleuro-muted"
-        >
-          Gratis • Geen account nodig
-        </AppText>
       </View>
 
       <View className="mt-10">
@@ -69,6 +64,10 @@ export default function HomeScreen() {
           Hoe werkt het?
         </AppText>
       </Pressable>
+
+      <View className="mt-10">
+        <ParentBrand />
+      </View>
     </Screen>
   );
 }

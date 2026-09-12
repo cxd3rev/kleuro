@@ -16,7 +16,7 @@ export function BrandMark({ size = "lg", withName = true }: BrandMarkProps) {
         resizeMode="contain"
         style={{
           width: isLarge ? 220 : 152,
-          height: isLarge ? 56 : 39,
+          height: isLarge ? 58 : 40,
         }}
       />
     );
@@ -24,7 +24,7 @@ export function BrandMark({ size = "lg", withName = true }: BrandMarkProps) {
 
   return (
     <Image
-      source={require("../assets/logo-mark.png")}
+      source={require("../assets/logo-mark-nobg.png")}
       accessibilityLabel="Kleuro"
       resizeMode="contain"
       style={{

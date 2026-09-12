@@ -44,15 +44,9 @@ export default function HowItWorksScreen() {
       />
       <View className="mt-4">
         <Button
-          label="Probeer het gratis"
+          label="Aan de slag"
           onPress={() => router.push("/foto")}
         />
-        <AppText
-          variant="medium"
-          className="mt-3 text-center text-sm text-kleuro-muted"
-        >
-          Gratis • Geen account nodig
-        </AppText>
       </View>
     </Screen>
   );
