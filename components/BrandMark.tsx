@@ -1,27 +1,36 @@
-import { View } from "react-native";
-import { AppText } from "./AppText";
+import { Image } from "react-native";
 
 type BrandMarkProps = {
   size?: "sm" | "lg";
+  withName?: boolean;
 };
 
-export function BrandMark({ size = "lg" }: BrandMarkProps) {
-  const box = size === "lg" ? "h-16 w-16 rounded-[20px]" : "h-11 w-11 rounded-2xl";
-  const letter = size === "lg" ? "text-3xl" : "text-xl";
+export function BrandMark({ size = "lg", withName = true }: BrandMarkProps) {
+  const isLarge = size === "lg";
+
+  if (withName) {
+    return (
+      <Image
+        source={require("../assets/logo-wordmark.png")}
+        accessibilityLabel="Kleuro"
+        resizeMode="contain"
+        style={{
+          width: isLarge ? 220 : 152,
+          height: isLarge ? 56 : 39,
+        }}
+      />
+    );
+  }
 
   return (
-    <View className="flex-row items-center">
-      <View className={`${box} items-center justify-center bg-kleuro-primary`}>
-        <AppText variant="bold" className={`${letter} text-kleuro-dark`}>
-          K
-        </AppText>
-      </View>
-      <AppText
-        variant="bold"
-        className={`ml-3 text-kleuro-dark ${size === "lg" ? "text-2xl" : "text-lg"}`}
-      >
-        Kleuro
-      </AppText>
-    </View>
+    <Image
+      source={require("../assets/logo-mark.png")}
+      accessibilityLabel="Kleuro"
+      resizeMode="contain"
+      style={{
+        width: isLarge ? 64 : 44,
+        height: isLarge ? 48 : 33,
+      }}
+    />
   );
 }
