@@ -5,6 +5,7 @@ const cors = require("cors");
 const express = require("express");
 const analyzeRouter = require("./routes/analyze");
 const visualizeRouter = require("./routes/visualize");
+const leadsRouter = require("./routes/leads");
 
 const PORT = Number(process.env.PORT) || 3001;
 
@@ -18,6 +19,7 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/analyze", analyzeRouter);
 app.use("/api/visualize", visualizeRouter);
+app.use("/api/leads", leadsRouter);
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Kleuro API listening on ${PORT}`);

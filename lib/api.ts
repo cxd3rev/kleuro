@@ -81,3 +81,27 @@ export async function visualizeHomePhoto(options: {
     clearTimeout(timeout);
   }
 }
+
+export async function submitLead(payload: Record<string, unknown>) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);
+
+  try {
+    const response = await fetch(`${getApiBaseUrl()}/api/leads`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error("LEAD_FAILED");
+    }
+
+    return response.json();
+  } catch {
+    throw new Error("LEAD_FAILED");
+  } finally {
+    clearTimeout(timeout);
+  }
+}

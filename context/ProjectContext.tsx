@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { emptyContactDraft, type ContactDraft } from "../constants/leads";
 import type { ColorChoice } from "../constants/paints";
 import {
   createManualSurfaces,
@@ -13,6 +14,7 @@ import {
 } from "../constants/surfaces";
 import type { ProcessedPhoto } from "../lib/photo";
 import type { QualityIssue } from "../lib/photoQuality";
+import { createSessionId } from "../lib/session";
 
 export type VisualizationResult = {
   imageUri: string;
@@ -36,11 +38,13 @@ const emptyDetails: ProjectDetails = {
 };
 
 type ProjectContextValue = {
+  sessionId: string;
   photo: ProcessedPhoto | null;
   surfaces: SurfaceResult[];
   colorChoices: Partial<Record<SurfaceId, ColorChoice>>;
   visualization: VisualizationResult | null;
   details: ProjectDetails;
+  contact: ContactDraft;
   analysisFailed: boolean;
   extraWarnings: QualityIssue[];
   setPhoto: (photo: ProcessedPhoto | null) => void;
@@ -48,15 +52,18 @@ type ProjectContextValue = {
   toggleSurface: (id: SurfaceId) => void;
   setSurfaceColor: (id: SurfaceId, color: ColorChoice) => void;
   setDetails: (details: ProjectDetails) => void;
+  setContact: (contact: ContactDraft) => void;
   useManualSurfaces: () => void;
   setAnalysisFailed: (failed: boolean) => void;
   setExtraWarnings: (warnings: QualityIssue[]) => void;
   setVisualization: (result: VisualizationResult | null) => void;
+  resetProject: () => void;
 };
 
 const ProjectContext = createContext<ProjectContextValue | null>(null);
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
+  const [sessionId, setSessionId] = useState(createSessionId);
   const [photo, setPhotoState] = useState<ProcessedPhoto | null>(null);
   const [surfaces, setSurfaces] = useState<SurfaceResult[]>(createManualSurfaces());
   const [colorChoices, setColorChoices] = useState<
@@ -66,16 +73,31 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     null,
   );
   const [details, setDetails] = useState<ProjectDetails>(emptyDetails);
+  const [contact, setContact] = useState<ContactDraft>(emptyContactDraft);
   const [analysisFailed, setAnalysisFailed] = useState(false);
   const [extraWarnings, setExtraWarnings] = useState<QualityIssue[]>([]);
 
+  const resetProject = () => {
+    setSessionId(createSessionId());
+    setPhotoState(null);
+    setSurfaces(createManualSurfaces());
+    setColorChoices({});
+    setVisualization(null);
+    setDetails(emptyDetails);
+    setContact(emptyContactDraft);
+    setAnalysisFailed(false);
+    setExtraWarnings([]);
+  };
+
   const value = useMemo<ProjectContextValue>(
     () => ({
+      sessionId,
       photo,
       surfaces,
       colorChoices,
       visualization,
       details,
+      contact,
       analysisFailed,
       extraWarnings,
       setPhoto: (next) => {
@@ -99,6 +121,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         setColorChoices((current) => ({ ...current, [id]: color }));
       },
       setDetails,
+      setContact,
       useManualSurfaces: () => {
         setSurfaces(createManualSurfaces());
         setAnalysisFailed(true);
@@ -107,13 +130,16 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       setAnalysisFailed,
       setExtraWarnings,
       setVisualization,
+      resetProject,
     }),
     [
       analysisFailed,
       colorChoices,
+      contact,
       details,
       extraWarnings,
       photo,
+      sessionId,
       surfaces,
       visualization,
     ],
