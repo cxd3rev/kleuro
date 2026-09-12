@@ -8,7 +8,6 @@ const {
 } = require("../lib/leadPayload");
 
 const router = express.Router();
-const memoryLeads = [];
 
 async function uploadPrivateImage(supabase, bucket, path, image) {
   const { error } = await supabase.storage.from(bucket).upload(path, image.buffer, {
@@ -25,14 +24,6 @@ router.post("/", async (req, res) => {
   const errors = validateLeadBody(req.body ?? {});
   if (Object.keys(errors).length > 0) {
     res.status(400).json({ error: "invalid_lead", fields: errors });
-    return;
-  }
-
-  if (process.env.LEAD_STORE === "memory") {
-    const lead = normalizeLead(req.body);
-    const record = { id: `memory-${memoryLeads.length + 1}`, ...lead };
-    memoryLeads.push(record);
-    res.json({ ok: true, id: record.id });
     return;
   }
 
