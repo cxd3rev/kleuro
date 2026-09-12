@@ -4,6 +4,7 @@ import { inspectImageQuality, QUALITY_MESSAGES, type QualityIssue } from "./phot
 
 const ALLOWED_MIME = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
 const ALLOWED_EXT = new Set(["jpg", "jpeg", "png", "webp"]);
+const MAX_EDGE = 1600;
 
 export type ProcessedPhoto = {
   uri: string;
@@ -43,9 +44,15 @@ export async function processPhoto(asset: {
     throw new Error("UNSUPPORTED_TYPE");
   }
 
-  const width = asset.width ?? 1600;
+  const width = asset.width ?? MAX_EDGE;
+  const height = asset.height ?? MAX_EDGE;
+  const longest = Math.max(width, height);
   const actions: ImageManipulator.Action[] =
-    width > 1600 ? [{ resize: { width: 1600 } }] : [];
+    longest > MAX_EDGE
+      ? width >= height
+        ? [{ resize: { width: MAX_EDGE } }]
+        : [{ resize: { height: MAX_EDGE } }]
+      : [];
 
   const compressed = await ImageManipulator.manipulateAsync(asset.uri, actions, {
     compress: 0.7,
@@ -86,7 +93,7 @@ export async function processPhoto(asset: {
 export async function pickFromLibrary() {
   const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!permission.granted) {
-    throw new Error("LIBRARY_PERMISSION");
+    throw new Error(permission.canAskAgain === false ? "LIBRARY_SETTINGS" : "LIBRARY_PERMISSION");
   }
 
   const result = await ImagePicker.launchImageLibraryAsync({

@@ -14,7 +14,7 @@ import {
   PROCESSING_CONSENT_LABEL,
 } from "../constants/privacy";
 import { useProject } from "../context/ProjectContext";
-import { submitLead } from "../lib/api";
+import { apiErrorMessage, submitLead } from "../lib/api";
 import { validateLeadDraft } from "../lib/leadValidation";
 import { includedWorkIds, priceRangeFromDetails } from "../lib/pricingInput";
 
@@ -101,8 +101,8 @@ export default function ContactScreen() {
         includedWorkLabels: WORK_OPTIONS.map((item) => item.label),
       });
       router.push("/bedankt");
-    } catch {
-      setSubmitError(SUBMIT_ERROR);
+    } catch (error) {
+      setSubmitError(apiErrorMessage(error, SUBMIT_ERROR));
     } finally {
       setSubmitting(false);
     }

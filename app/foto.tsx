@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Image, View } from "react-native";
+import { Alert, Image, Linking, Platform, View } from "react-native";
 import { AnalysisLoader } from "../components/AnalysisLoader";
 import { AppText } from "../components/AppText";
 import { Button } from "../components/Button";
@@ -8,7 +8,7 @@ import { QualityNotice } from "../components/QualityNotice";
 import { Screen } from "../components/Screen";
 import { ScreenHeader } from "../components/ScreenHeader";
 import { useProject } from "../context/ProjectContext";
-import { analyzeHomePhoto } from "../lib/api";
+import { analyzeHomePhoto, apiErrorMessage } from "../lib/api";
 import { pickFromLibrary, unsupportedTypeMessage } from "../lib/photo";
 
 export default function FotoScreen() {
@@ -25,8 +25,18 @@ export default function FotoScreen() {
   const [busy, setBusy] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(
+    "Er is iets misgegaan. Probeer het opnieuw.",
+  );
 
-  const showError = (message: string) => {
+  const showError = (message: string, openSettings = false) => {
+    if (openSettings && Platform.OS !== "web") {
+      Alert.alert("Foto", message, [
+        { text: "Annuleren", style: "cancel" },
+        { text: "Instellingen", onPress: () => void Linking.openSettings() },
+      ]);
+      return;
+    }
     Alert.alert("Foto", message);
   };
 
@@ -40,8 +50,11 @@ export default function FotoScreen() {
       }
     } catch (error) {
       const code = error instanceof Error ? error.message : "";
-      if (code === "LIBRARY_PERMISSION") {
-        showError("Kleuro heeft toegang tot je foto's nodig om een woningfoto te kiezen.");
+      if (code === "LIBRARY_PERMISSION" || code === "LIBRARY_SETTINGS") {
+        showError(
+          "Kleuro heeft toegang tot je foto's nodig om een woningfoto te kiezen.",
+          code === "LIBRARY_SETTINGS",
+        );
       } else if (code === "UNSUPPORTED_TYPE") {
         showError(unsupportedTypeMessage);
       } else {
@@ -60,6 +73,7 @@ export default function FotoScreen() {
     try {
       setAnalyzing(true);
       setHasError(false);
+      setErrorMessage("Er is iets misgegaan. Probeer het opnieuw.");
       const result = await analyzeHomePhoto({
         imageBase64: photo.base64,
         mimeType: photo.mimeType,
@@ -75,8 +89,11 @@ export default function FotoScreen() {
       }
       setExtraWarnings(extra);
       router.push("/oppervlakken");
-    } catch {
+    } catch (error) {
       setHasError(true);
+      setErrorMessage(
+        apiErrorMessage(error, "Er is iets misgegaan. Probeer het opnieuw."),
+      );
     } finally {
       setAnalyzing(false);
     }
@@ -112,7 +129,7 @@ export default function FotoScreen() {
           {hasError ? (
             <View className="mb-4 rounded-3xl bg-kleuro-cream p-4">
               <AppText className="mb-4 text-[15px] leading-6 text-kleuro-dark">
-                Er is iets misgegaan. Probeer het opnieuw.
+                {errorMessage}
               </AppText>
               <Button label="Probeer opnieuw" onPress={handleAnalyze} />
               <View className="h-3" />

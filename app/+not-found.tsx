@@ -1,9 +1,12 @@
-import { Link, Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { View } from "react-native";
 import { AppText } from "../components/AppText";
+import { Button } from "../components/Button";
 import { Screen } from "../components/Screen";
 
 export default function NotFoundScreen() {
+  const router = useRouter();
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -16,11 +19,7 @@ export default function NotFoundScreen() {
             Dit scherm bestaat niet. Ga terug naar het startscherm om verder te
             gaan.
           </AppText>
-          <Link href="/home" asChild>
-            <AppText variant="bold" className="text-base text-kleuro-dark">
-              Naar startscherm
-            </AppText>
-          </Link>
+          <Button label="Naar startscherm" onPress={() => router.replace("/home")} />
         </View>
       </Screen>
     </>

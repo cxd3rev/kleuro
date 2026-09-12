@@ -16,6 +16,7 @@ export function Screen({ children, scroll = true }: ScreenProps) {
   const content = scroll ? (
     <ScrollView
       keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="interactive"
       showsVerticalScrollIndicator={false}
       contentContainerClassName="flex-grow px-6 pb-10 pt-2"
     >
@@ -32,7 +33,7 @@ export function Screen({ children, scroll = true }: ScreenProps) {
     >
       <KeyboardAvoidingView
         className="w-full max-w-[430px] flex-1 self-center"
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         {content}
       </KeyboardAvoidingView>

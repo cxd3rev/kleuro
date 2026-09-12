@@ -8,7 +8,7 @@ import { LoadingScreen } from "../components/LoadingScreen";
 import { Screen } from "../components/Screen";
 import { ScreenHeader } from "../components/ScreenHeader";
 import { colorSignature, useProject } from "../context/ProjectContext";
-import { visualizeHomePhoto } from "../lib/api";
+import { apiErrorMessage, visualizeHomePhoto } from "../lib/api";
 
 export default function VisualisatieScreen() {
   const router = useRouter();
@@ -21,6 +21,9 @@ export default function VisualisatieScreen() {
   } = useProject();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(
+    "De visualisatie kon niet worden gemaakt. Probeer het opnieuw.",
+  );
   const lastTried = useRef("");
 
   const selected = surfaces.filter((item) => item.selected);
@@ -40,6 +43,7 @@ export default function VisualisatieScreen() {
     try {
       setLoading(true);
       setError(false);
+      setErrorMessage("De visualisatie kon niet worden gemaakt. Probeer het opnieuw.");
       lastTried.current = signature;
       const imageUri = await visualizeHomePhoto({
         imageBase64: photo.base64,
@@ -51,8 +55,14 @@ export default function VisualisatieScreen() {
         })),
       });
       setVisualization({ imageUri, signature });
-    } catch {
+    } catch (error) {
       setError(true);
+      setErrorMessage(
+        apiErrorMessage(
+          error,
+          "De visualisatie kon niet worden gemaakt. Probeer het opnieuw.",
+        ),
+      );
     } finally {
       setLoading(false);
     }
@@ -107,7 +117,7 @@ export default function VisualisatieScreen() {
         <ScreenHeader title="Visualisatie" />
         <View className="mb-6 rounded-3xl bg-kleuro-cream p-4">
           <AppText className="text-[15px] leading-6 text-kleuro-dark">
-            De visualisatie kon niet worden gemaakt. Probeer het opnieuw.
+            {errorMessage}
           </AppText>
         </View>
         <Button

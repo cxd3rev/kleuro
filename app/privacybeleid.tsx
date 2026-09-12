@@ -34,7 +34,8 @@ export default function PrivacyPolicyScreen() {
         <AppText className="text-[15px] leading-6 text-kleuro-muted">
           Naam, e-mailadres, telefoonnummer en optioneel adres of bericht. Ook
           bewaren we je gekozen kleuren, oppervlakken, indicatieve prijs en
-          eventueel de woningfoto en visualisatie.
+          eventueel de woningfoto en visualisatie. Foto's worden privé bewaard
+          en zijn niet openbaar zichtbaar.
         </AppText>
       </View>
 

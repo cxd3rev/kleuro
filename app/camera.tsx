@@ -1,7 +1,8 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
-import { Alert, Platform, Pressable, View } from "react-native";
+import { Alert, Linking, Platform, Pressable, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppText } from "../components/AppText";
 import { Button } from "../components/Button";
 import { Screen } from "../components/Screen";
@@ -17,6 +18,14 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<"back" | "front">("back");
   const [busy, setBusy] = useState(false);
+  const insets = useSafeAreaInsets();
+
+  const openCameraSettings = () => {
+    if (Platform.OS === "web") {
+      return;
+    }
+    void Linking.openSettings();
+  };
 
   const handleCapturedUri = async (uri: string, width?: number, height?: number) => {
     const processed = await processPhoto({
@@ -99,7 +108,16 @@ export default function CameraScreen() {
         <AppText className="mb-8 text-base leading-7 text-kleuro-muted">
           Kleuro gebruikt de camera om een foto van je woning te maken.
         </AppText>
-        <Button label="Sta camera toe" onPress={requestPermission} />
+        <Button
+          label={permission.canAskAgain === false ? "Open instellingen" : "Sta camera toe"}
+          onPress={() => {
+            if (permission.canAskAgain === false) {
+              openCameraSettings();
+              return;
+            }
+            void requestPermission();
+          }}
+        />
       </Screen>
     );
   }
@@ -127,7 +145,13 @@ export default function CameraScreen() {
         facing={facing}
         style={{ flex: 1 }}
       />
-      <View className="absolute inset-0 justify-between px-6 pb-10 pt-14">
+      <View
+        className="absolute inset-0 justify-between px-6"
+        style={{
+          paddingTop: Math.max(insets.top, 12),
+          paddingBottom: Math.max(insets.bottom, 16),
+        }}
+      >
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Sluit camera"

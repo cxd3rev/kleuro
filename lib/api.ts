@@ -3,6 +3,20 @@ import type { ColorChoice } from "../constants/paints";
 import type { SurfaceResult } from "../constants/surfaces";
 import { mapAnalysisToSurfaces } from "../constants/surfaces";
 
+function userFacingApiError(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message === "API_URL_MISSING") {
+    return new Error("API_URL_MISSING");
+  }
+  return new Error(fallback);
+}
+
+export function apiErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message === "API_URL_MISSING") {
+    return "De app kan de server nu niet bereiken. Probeer het later opnieuw.";
+  }
+  return fallback;
+}
+
 export type AnalysisResponse = {
   houseVisible: boolean;
   tooDark: boolean;
@@ -37,8 +51,8 @@ export async function analyzeHomePhoto(options: {
       tooDark: payload.tooDark === true,
       surfaces: mapAnalysisToSurfaces(payload.surfaces ?? []),
     };
-  } catch {
-    throw new Error("ANALYSIS_FAILED");
+  } catch (error) {
+    throw userFacingApiError(error, "ANALYSIS_FAILED");
   } finally {
     clearTimeout(timeout);
   }
@@ -75,8 +89,8 @@ export async function visualizeHomePhoto(options: {
 
     const mimeType = payload.mimeType === "image/png" ? "image/png" : "image/jpeg";
     return `data:${mimeType};base64,${payload.imageBase64}`;
-  } catch {
-    throw new Error("VISUALIZATION_FAILED");
+  } catch (error) {
+    throw userFacingApiError(error, "VISUALIZATION_FAILED");
   } finally {
     clearTimeout(timeout);
   }
@@ -99,8 +113,8 @@ export async function submitLead(payload: Record<string, unknown>) {
     }
 
     return response.json();
-  } catch {
-    throw new Error("LEAD_FAILED");
+  } catch (error) {
+    throw userFacingApiError(error, "LEAD_FAILED");
   } finally {
     clearTimeout(timeout);
   }

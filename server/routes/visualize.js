@@ -2,13 +2,15 @@ const express = require("express");
 const OpenAI = require("openai");
 const { toFile } = require("openai");
 const { SURFACE_CATALOG } = require("../catalog");
+const { stripDataUrl } = require("../lib/images");
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
     const { imageBase64, mimeType, paints } = req.body ?? {};
-    if (!imageBase64 || typeof imageBase64 !== "string") {
+    const base64 = stripDataUrl(imageBase64);
+    if (!base64) {
       res.status(400).json({ error: "missing_image" });
       return;
     }
@@ -44,7 +46,6 @@ router.post("/", async (req, res) => {
       return;
     }
 
-    const base64 = imageBase64.replace(/^data:[^;]+;base64,/, "");
     const extension = mimeType === "image/png" ? "png" : "jpg";
     const openai = new OpenAI({ apiKey });
     const image = await toFile(Buffer.from(base64, "base64"), `house.${extension}`, {

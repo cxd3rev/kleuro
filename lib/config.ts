@@ -7,6 +7,10 @@ export function getApiBaseUrl() {
     return fromEnv;
   }
 
+  if (!__DEV__) {
+    throw new Error("API_URL_MISSING");
+  }
+
   if (Platform.OS === "web") {
     return "http://localhost:3001";
   }
