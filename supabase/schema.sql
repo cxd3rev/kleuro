@@ -52,7 +52,10 @@ values
 on conflict (id) do update
 set public = excluded.public;
 
-alter table storage.objects enable row level security;
+-- storage.objects already has RLS on hosted Supabase. The migration role
+-- is not the table owner, so ENABLE ROW LEVEL SECURITY cannot be re-run.
+-- Confirm with: select relrowsecurity from pg_class c join pg_namespace n
+--   on n.oid = c.relnamespace where n.nspname = 'storage' and c.relname = 'objects';
 
 -- Geen policies voor lead-originals / lead-visuals:
 -- anon en authenticated hebben geen lees- of schrijfrecht.
