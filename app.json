@@ -1,25 +1,85 @@
 {
   "expo": {
-    "name": "kleuro",
+    "name": "Kleuro",
     "slug": "kleuro",
+    "scheme": "kleuro",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "primaryColor": "#F5A623",
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "nl.kleuro.app",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "Kleuro gebruikt de camera om een foto van je woning te maken.",
+        "NSPhotoLibraryUsageDescription": "Kleuro gebruikt je foto's om je woning in nieuwe kleuren te tonen."
+      }
     },
     "android": {
+      "package": "nl.kleuro.app",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#171717",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": true,
+      "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "CAMERA",
+        "READ_MEDIA_IMAGES",
+        "READ_EXTERNAL_STORAGE"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#FFFFFF",
+      "barStyle": "dark-content"
+    },
+    "androidNavigationBar": {
+      "backgroundColor": "#FFFFFF",
+      "barStyle": "dark-content"
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 220
+        }
+      ],
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Kleuro gebruikt je foto's om je woning in nieuwe kleuren te tonen.",
+          "cameraPermission": "Kleuro gebruikt de camera om een foto van je woning te maken."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Kleuro gebruikt de camera om een foto van je woning te maken.",
+          "recordAudioAndroid": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }
