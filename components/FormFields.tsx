@@ -1,5 +1,51 @@
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, TextInput, View, type TextInputProps } from "react-native";
 import { AppText } from "./AppText";
+
+export function TextField({
+  label,
+  value,
+  onChange,
+  required,
+  error,
+  hint,
+  multiline,
+  ...inputProps
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  error?: string;
+  hint?: string;
+  multiline?: boolean;
+} & Omit<TextInputProps, "value" | "onChange" | "onChangeText">) {
+  return (
+    <View className="mb-4">
+      <AppText variant="semibold" className="mb-2 text-base text-kleuro-dark">
+        {label}
+        {required ? " *" : ""}
+      </AppText>
+      {hint ? (
+        <AppText className="mb-2 text-sm leading-5 text-kleuro-muted">{hint}</AppText>
+      ) : null}
+      <TextInput
+        {...inputProps}
+        value={value}
+        onChangeText={onChange}
+        placeholderTextColor="#6F6F6F"
+        accessibilityLabel={required ? `${label}, verplicht` : label}
+        multiline={multiline}
+        textAlignVertical={multiline ? "top" : "center"}
+        className={`rounded-2xl border bg-white px-4 text-base text-kleuro-dark ${
+          multiline ? "min-h-[120px] py-4" : "min-h-[56px]"
+        } ${error ? "border-[#C2410C]" : "border-kleuro-line"}`}
+      />
+      {error ? (
+        <AppText className="mt-2 text-sm leading-5 text-[#C2410C]">{error}</AppText>
+      ) : null}
+    </View>
+  );
+}
 
 export function NumberField({
   label,

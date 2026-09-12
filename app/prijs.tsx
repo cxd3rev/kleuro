@@ -4,31 +4,15 @@ import { AppText } from "../components/AppText";
 import { Button } from "../components/Button";
 import { Screen } from "../components/Screen";
 import { ScreenHeader } from "../components/ScreenHeader";
-import {
-  calculateIndicativeRange,
-  formatEuroRange,
-} from "../config/pricing";
+import { formatEuroRange } from "../config/pricing";
 import { WORK_OPTIONS } from "../constants/work";
 import { useProject } from "../context/ProjectContext";
-
-function parseOptionalNumber(value: string) {
-  const normalized = value.replace(",", ".").trim();
-  if (!normalized) {
-    return undefined;
-  }
-  const parsed = Number(normalized);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
+import { priceRangeFromDetails } from "../lib/pricingInput";
 
 export default function PrijsScreen() {
   const router = useRouter();
   const { details } = useProject();
-  const range = calculateIndicativeRange({
-    facadeM2: parseOptionalNumber(details.facadeM2),
-    doorCount: details.doorCount || undefined,
-    garageDoorCount: details.garageDoorCount || undefined,
-    windowM2: parseOptionalNumber(details.windowM2),
-  });
+  const range = priceRangeFromDetails(details);
 
   return (
     <Screen>
