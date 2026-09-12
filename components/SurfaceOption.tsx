@@ -30,6 +30,9 @@ export function SurfaceOption({
         <AppText variant="semibold" className="text-base text-kleuro-dark">
           {surface.name}
         </AppText>
+        {surface.visible ? (
+          <AppText className="mt-1 text-xs text-kleuro-muted">Op de foto</AppText>
+        ) : null}
       </View>
     </Pressable>
   );

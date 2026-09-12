@@ -47,25 +47,29 @@ Gebruik exact deze ids en namen:
 ${SURFACE_CATALOG.map((item) => `- ${item.id} / ${item.name}`).join("\n")}
 
 Regels:
-- Geef altijd alle 8 surfaces terug.
-- visible=true alleen als dat schilderbare onderdeel duidelijk in beeld is.
-- confidence is een getal tussen 0 en 1.
+- Geef altijd alle ${SURFACE_CATALOG.length} surfaces terug.
+- visible=true ALLEEN als dat onderdeel duidelijk op DEZE foto te zien is.
+- Zet visible=false als het onderdeel niet in beeld is, ook als het bij een huis zou kunnen horen.
+- Gevel/muren: visible=true als de gevel of binnenmuur duidelijk zichtbaar is.
+- Ramen: visible=true bij glas in beeld; raamkozijnen apart als de kozijnen zichtbaar zijn.
+- Garagepoort, luiken, balkon, trap, keuken, enz. alleen true als je ze echt ziet.
+- "Andere onderdelen" alleen true bij een duidelijk schilderbaar vlak dat niet in de lijst past.
+- confidence is een getal tussen 0 en 1. Hoger als het onderdeel groot en scherp in beeld is.
 - tooDark=true alleen bij een extreem donkere foto.
-- houseVisible=false alleen als er nauwelijks een woning of gebouw te zien is.
-- Wees mild: bij twijfel mag visible true zijn met een lagere confidence.`,
+- houseVisible=false alleen als er nauwelijks een woning, kamer of gebouw te zien is.`,
         },
         {
           role: "user",
           content: [
             {
               type: "text",
-              text: "Herken de zichtbare schilderbare onderdelen van deze woning.",
+              text: "Welke schilderbare onderdelen van deze woning of kamer staan écht op de foto? Markeer alleen wat je ziet.",
             },
             {
               type: "image_url",
               image_url: {
                 url: `data:${safeMime};base64,${base64}`,
-                detail: "low",
+                detail: "high",
               },
             },
           ],

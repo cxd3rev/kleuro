@@ -1,12 +1,6 @@
-export type SurfaceId =
-  | "facade"
-  | "window-frames"
-  | "windows"
-  | "doors"
-  | "garage-door"
-  | "shutters"
-  | "eaves"
-  | "other";
+import catalog from "./surfaces-catalog.json";
+
+export type SurfaceId = string;
 
 export type SurfaceResult = {
   id: SurfaceId;
@@ -16,16 +10,7 @@ export type SurfaceResult = {
   selected: boolean;
 };
 
-export const SURFACE_CATALOG: { id: SurfaceId; name: string }[] = [
-  { id: "facade", name: "Gevel" },
-  { id: "window-frames", name: "Raamkozijnen" },
-  { id: "windows", name: "Ramen" },
-  { id: "doors", name: "Deuren" },
-  { id: "garage-door", name: "Garagepoort" },
-  { id: "shutters", name: "Luiken" },
-  { id: "eaves", name: "Dakrand" },
-  { id: "other", name: "Andere onderdelen" },
-];
+export const SURFACE_CATALOG: { id: SurfaceId; name: string }[] = catalog;
 
 export function createManualSurfaces(): SurfaceResult[] {
   return SURFACE_CATALOG.map((item) => ({
@@ -48,7 +33,7 @@ export function mapAnalysisToSurfaces(
       ...item,
       visible,
       confidence,
-      selected: visible && confidence >= 0.4,
+      selected: visible && confidence >= 0.45,
     };
   });
 }

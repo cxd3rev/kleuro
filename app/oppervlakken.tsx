@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useState } from "react";
 import { View } from "react-native";
 import { AppText } from "../components/AppText";
 import { Button } from "../components/Button";
@@ -18,6 +19,10 @@ export default function OppervlakkenScreen() {
     extraWarnings,
   } = useProject();
   const selectedCount = surfaces.filter((item) => item.selected).length;
+  const detected = surfaces.filter((item) => item.visible);
+  const extra = surfaces.filter((item) => !item.visible);
+  const [showAll, setShowAll] = useState(analysisFailed || detected.length === 0);
+  const visibleList = showAll ? surfaces : detected;
 
   if (!photo) {
     return (
@@ -43,16 +48,27 @@ export default function OppervlakkenScreen() {
       <AppText className="mb-6 text-base leading-7 text-kleuro-muted">
         {analysisFailed
           ? "Kies zelf de onderdelen die je wilt laten schilderen."
-          : "We hebben een voorstel gemaakt. Je kunt dit nog aanpassen."}
+          : detected.length > 0
+            ? "We hebben deze onderdelen op je foto herkend. Je kunt de selectie nog aanpassen."
+            : "Kies de onderdelen die je wilt laten schilderen."}
       </AppText>
       <QualityNotice issues={extraWarnings} />
-      {surfaces.map((surface) => (
+      {visibleList.map((surface) => (
         <SurfaceOption
           key={surface.id}
           surface={surface}
           onToggle={() => toggleSurface(surface.id)}
         />
       ))}
+      {!showAll && extra.length > 0 ? (
+        <View className="mb-2 mt-1">
+          <Button
+            label="Meer onderdelen tonen"
+            variant="ghost"
+            onPress={() => setShowAll(true)}
+          />
+        </View>
+      ) : null}
       <View className="mt-4">
         <Button
           label="Verder"

@@ -47,8 +47,8 @@ export default function KleurenScreen() {
         Kies je kleuren
       </AppText>
       <AppText className="mb-6 text-base leading-7 text-kleuro-muted">
-        Kies per onderdeel een kleur. Daarna maken we een visualisatie van je
-        woning.
+        Kies per onderdeel elke kleur die je wilt. Daarna maken we een
+        visualisatie van je woning.
       </AppText>
 
       {selected.map((surface) => {
